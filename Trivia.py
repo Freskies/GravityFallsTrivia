@@ -7,10 +7,20 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
+        """
+        Players management:
+        :players_list: list of players
+        :players: key = name of player; value = number of right answer
+        """
         self.players_list = list()
+        self.players = dict()
 
-        # add players
-        self.show_popup()
+        """
+        Question management:
+        extract casual questions and then remove from dict
+        :questions: key = question; value = answer
+        """
+        self.questions = dict()
 
         # start graphical interfaces
         self.init_ui()
@@ -21,11 +31,40 @@ class MainWindow(QMainWindow):
         Create the UI of the main window
         :return: nothing
         """
-        print(self.players_list)
+
+        def setup_players() -> None:
+            """
+            Add players and crate his dict
+            :return: Nothing
+            """
+
+            # add players
+            self.popup_add_players()
+
+            # create the dictionary of players
+            for player in self.players_list:
+                self.players.update({player: 0})
+
+        def setup_questions() -> None:
+            # get list of questions
+            with open('questions.txt', 'r') as f:
+                questions_list = f.readlines()
+
+            # get list of answers
+            with open('answers.txt', 'r') as f:
+                answers_list = f.readlines()
+
+            # adapted from https://www.kite.com/python/answers/how-to-create-a-dictionary-from-two-lists-in-python
+            self.questions = dict(zip(questions_list, answers_list))
+
+        setup_players()
+        setup_questions()
+
+        print(self.questions)
         self.setObjectName("MainWindow")
         self.setFixedSize(620, 558)
 
-    def show_popup(self) -> None:
+    def popup_add_players(self) -> None:
         """
         Create a popup that will appear before the game starts
         With this popup you will be able to add players to the game
@@ -49,10 +88,10 @@ class MainWindow(QMainWindow):
         if player_name:
             if player_name not in self.players_list:
                 self.players_list.append(player_name)
-            self.show_popup()
+            self.popup_add_players()
 
         elif len(self.players_list) < 1:
-            self.show_popup()
+            self.popup_add_players()
 
         else:
             pass
