@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QInputDialog
 from Utilities import chunks
+import random
 
 
 class MainWindow(QMainWindow):
@@ -7,13 +8,19 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
+        # The number of right answer needed to win
+        self.VICTORY_POINTS = 3
+
         """
         Players management:
         :players_list: list of players
         :players: key = name of player; value = number of right answer
+        :turn: the number of the turn played (1 turn = 1 turn per player)
         """
         self.players_list = list()
         self.players = dict()
+        self.turn = 0
+        self.setup_players()
 
         """
         Question management:
@@ -21,10 +28,13 @@ class MainWindow(QMainWindow):
         :questions: key = question; value = answer
         """
         self.questions = dict()
+        self.setup_questions()
 
         # start graphical interfaces
         self.init_ui()
         self.show()
+
+        self.game_loop()
 
     def init_ui(self) -> None:
         """
@@ -32,35 +42,6 @@ class MainWindow(QMainWindow):
         :return: nothing
         """
 
-        def setup_players() -> None:
-            """
-            Add players and crate his dict
-            :return: Nothing
-            """
-
-            # add players
-            self.popup_add_players()
-
-            # create the dictionary of players
-            for player in self.players_list:
-                self.players.update({player: 0})
-
-        def setup_questions() -> None:
-            # get list of questions
-            with open('questions.txt', 'r') as f:
-                questions_list = f.readlines()
-
-            # get list of answers
-            with open('answers.txt', 'r') as f:
-                answers_list = f.readlines()
-
-            # adapted from https://www.kite.com/python/answers/how-to-create-a-dictionary-from-two-lists-in-python
-            self.questions = dict(zip(questions_list, answers_list))
-
-        setup_players()
-        setup_questions()
-
-        print(self.questions)
         self.setObjectName("MainWindow")
         self.setFixedSize(620, 558)
 
@@ -95,3 +76,56 @@ class MainWindow(QMainWindow):
 
         else:
             pass
+
+    def setup_players(self) -> None:
+        """
+        Add players and crate his dict
+        :return: Nothing
+        """
+
+        # add players
+        self.popup_add_players()
+
+        # create the dictionary of players
+        for player in self.players_list:
+            self.players.update({player: 0})
+
+    def setup_questions(self) -> None:
+        # get list of questions
+        with open('questions.txt', 'r') as f:
+            questions_list = f.readlines()
+
+        # get list of answers
+        with open('answers.txt', 'r') as f:
+            answers_list = f.readlines()
+
+        # adapted from https://www.kite.com/python/answers/how-to-create-a-dictionary-from-two-lists-in-python
+        self.questions = dict(zip(questions_list, answers_list))
+
+    # TODO documentation
+    def game_loop(self) -> None:
+        print(self.questions)
+        running = True
+
+        while running:
+            # next turn
+            self.turn += 1
+
+            # do a turn for every player
+            for player in self.players:
+                # extract casual question
+                question_key = random.choice(list(self.questions))
+
+                # TODO fai vedere la risposta
+
+                # capisci se ha indovinato o no
+                if input("indovianto: ") == "si":
+                    self.players[player] += 1
+
+                # TODO elimina la domanda
+                print(self.players)
+
+                # TODO controlla se ha vinto
+                if self.players[player] == self.VICTORY_POINTS:
+                    running = False
+                    break
