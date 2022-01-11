@@ -1,5 +1,5 @@
 from PyQt5.QtCore import QRect, QMetaObject, QCoreApplication
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtWidgets import QMainWindow, QInputDialog, QWidget, QGroupBox, QLabel, QFrame, QPushButton
 from Utilities import chunks
 import random
@@ -67,6 +67,7 @@ class MainWindow(QMainWindow):
         players_popup.setWindowTitle("Add new player")
         players_popup.setLabelText(f"{get_others_players()}\n\nEnter the player name")
         players_popup.resize(300, 100)
+        players_popup.setWindowIcon(QIcon("incon_gft.png"))
         players_popup.exec_()
         player_name = players_popup.textValue()
 
@@ -127,6 +128,7 @@ class MainWindow(QMainWindow):
         self.setObjectName("MainWindow")
         self.setWindowTitle("Gravity Falls Trivia Master")
         self.setFixedSize(800, 540)
+        self.setWindowIcon(QIcon("incon_gft.png"))
 
         central_widget = QWidget(self)
         central_widget.setObjectName("central_widget")
