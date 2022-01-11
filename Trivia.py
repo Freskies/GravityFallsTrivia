@@ -2,6 +2,11 @@ from PyQt5.QtWidgets import QMainWindow, QInputDialog
 from Utilities import chunks
 import random
 
+"""
+Project improvements
+    check if there aren't any more questions
+"""
+
 
 class MainWindow(QMainWindow):
 
@@ -102,28 +107,32 @@ class MainWindow(QMainWindow):
         # adapted from https://www.kite.com/python/answers/how-to-create-a-dictionary-from-two-lists-in-python
         self.questions = dict(zip(questions_list, answers_list))
 
-    # TODO documentation
     def game_loop(self) -> None:
-        print(self.questions)
+        """
+        Do the game loop (interact with graphics)
+        every step is commented
+        :return: Nothing
+        """
+
         running = True
 
         while running:
-            # next turn
             self.turn += 1
 
             # do a turn for every player
             for player in self.players:
-                # extract casual question
+                # 1. extract casual question
                 question_key = random.choice(list(self.questions))
+                print(question_key)
 
-                # TODO fai vedere la risposta
+                # TODO 2. make visible the answer
 
-                # capisci se ha indovinato o no
+                # TODO 3. input if the player answered the right
                 if input("indovianto: ") == "si":
                     self.players[player] += 1
 
-                # TODO elimina la domanda
-                print(self.players)
+                # TODO 4. Delete the question from the possible questions
+                del self.questions[question_key]
 
                 # TODO controlla se ha vinto
                 if self.players[player] == self.VICTORY_POINTS:
